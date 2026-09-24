@@ -28,6 +28,6 @@ Keep candidates separate from active instructions until reviewed. If the user on
 
 - Change only the lane the user approved. Never move a specialized rule into general guidance without satisfying the general trigger and receiving approval for that scope change.
 - Do not evolve invariants: never expose credentials, discard unexplained user changes, guess a base branch, claim checks that were not run, bypass required review/protection, or merge without the authority described in the workflow policy.
-- Add the evaluation cases before or with the rule. Check both intended activation and non-activation boundaries. Run the Skill Creator validator and relevant behavioral checks after changes.
+- Add or update the [behavioral evaluation cases](../evals/behavioral-cases.md) before or with the rule. Check both intended activation and non-activation boundaries. Run the Skill Creator validator and relevant behavioral checks after changes.
 - Review the final diff for unrelated guidance, broadened permissions, accidental personal data, and contradictory instructions. Keep changes small and reversible. If a promoted rule causes a regression, revert or narrow it rather than adding a chain of exceptions.
 - Report the evidence, lane, trigger, evaluations run, and any remaining uncertainty whenever an evolution is proposed or promoted.

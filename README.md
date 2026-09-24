@@ -55,7 +55,7 @@ The Skill does not discard unexplained local changes or force-reset a checkout. 
 
 ## Evolution
 
-The Skill can propose evidence-backed improvements but does not rewrite itself during a product task. General improvements require independent evidence from unrelated projects (or an explicit request to generalize), evaluation cases, and user approval. Project-specific guidance requires an exact trigger, stays within that context, and also requires approval. See [references/evolution-policy.md](references/evolution-policy.md).
+The Skill can propose evidence-backed improvements but does not rewrite itself during a product task. General improvements require independent evidence from unrelated projects (or an explicit request to generalize), evaluation cases, and user approval. Project-specific guidance requires an exact trigger, stays within that context, and also requires approval. See the [evolution policy](references/evolution-policy.md) and [behavioral evaluation cases](evals/behavioral-cases.md).
 
 ## Design references
 
