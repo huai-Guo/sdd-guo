@@ -1,77 +1,67 @@
-# SDD Guo
+# sdd-guo
 
-`sdd-guo` is a Codex Skill for completing a feature in a GitHub repository with GitHub Spec Kit. It guides the work from repository and branch setup through requirements, implementation, local checks, pushing a feature branch, and opening a pull request.
+`sdd-guo` is a Codex Skill for taking a software change from an existing GitHub repository through requirements, implementation, local verification, review, and delivery. It uses GitHub Spec Kit when available and keeps the work tied to observable acceptance criteria.
 
-## What it covers
+The Skill is designed to improve decisions at each stage: verify account identity separately from repository permissions; establish the actual base and branch state before switching; understand current behavior before repairing legacy logic; verify the final tree against acceptance criteria; and use a direct owner delivery path only when repository rules allow it.
 
-- Identify the current GitHub repository or clone a repository URL.
-- Sync a selected base branch and create a feature branch.
-- Clarify the requested change and use Spec Kit to specify, plan, break down, analyze, and implement it.
-- Run the project's relevant local checks and review the resulting diff.
-- Commit and push the feature branch, then create a PR targeting the selected base branch.
+## Install and prerequisites
 
-The base branch is `main` by default. If the work should target another branch, provide its exact name in the request. The Skill does not merge PRs. It stops before updating a checkout with uncommitted changes, and it does not push or create a PR when relevant checks have failed. An empty repository has no base commit, so GitHub cannot accept a PR yet. If you explicitly ask to create a project in that empty repository, the Skill may seed the base branch with a minimal README commit, explain that setup, and put the implementation on a feature branch for the PR.
+- Install this folder as a Codex Skill named `sdd-guo` (for example, under `~/.codex/skills/sdd-guo`).
+- Install Git and GitHub Spec Kit: `uv tool install specify-cli`. A target repository needs the Codex integration (`specify init --here --integration codex`) if it does not already have it. Before initializing a non-empty repository, inspect generated target paths; only use `--force` when no existing files will be overwritten.
+- Configure GitHub access with an SSH key registered to the GitHub account that owns or can access the target repository. For PR and permission operations, install GitHub CLI (`gh`) and authenticate it, or use an authorized GitHub integration.
+- The target repository's own documentation/configuration determines project-specific test and build dependencies.
 
-## Requirements
+## SSH setup
 
-- **Codex:** the `sdd-guo` Skill installed and available in the current Codex session.
-- **Git:** installed and able to clone/fetch/push the repository.
-- **Spec Kit CLI:** installed with `uv tool install specify-cli` (`uv` is required). The target repository also needs the Codex integration, initialized with `specify init --here --integration codex` if it is not already set up. If the CLI requires `--force` because the directory contains a README, use it only after confirming the installed paths do not conflict with existing files; do not overwrite existing work.
-- **GitHub repository access:** read permission to clone/fetch, and write permission to push a feature branch and open a PR. For a private repository, the signed-in GitHub account must have access to that repository.
-- **Pull request authentication:** either GitHub CLI (`gh`) authenticated for the repository, or an authorized GitHub integration available in Codex.
+Use a host alias for each account when multiple GitHub accounts are configured. Example OpenSSH config (replace the alias and key path with your own local values):
 
-The Skill relies on the target project's own build and test tools. Install any project-specific dependencies described by that repository before asking it to run checks.
-
-## GitHub login and credentials
-
-You do **not** need to stay signed in to github.com in a browser for each run if Git and GitHub CLI credentials are already configured. The browser is used once when completing the GitHub CLI's web authentication flow, if needed.
-
-### Recommended: SSH for Git, GitHub CLI for PRs
-
-**This Windows environment has two GitHub SSH identities configured.** The OpenSSH alias `github.com` uses `C:\Users\gjy\.ssh\id_ed25519_github` and authenticates as `GuoStudent`. The alias `github-huai` uses `C:\Users\gjy\.ssh\id_ed25519_github_huai` and authenticates as `huai-Guo`. The Skill should inspect the local SSH config first, match the greeting to the requested repository owner, and tell the user which identity and key path it selected before accessing the repository. For `huai-Guo` repositories, use a remote such as `git@github-huai:huai-Guo/REPO.git`. Do not send or paste private key material into chat. On another computer, inspect its own SSH config and use an identity configured for the requested GitHub account.
-
-1. Verify the candidate SSH alias authenticates as the intended GitHub account. For `huai-Guo`, use:
-
-   ```powershell
-   ssh -T git@github-huai
-   ```
-
-   A successful response should greet `huai-Guo`. GitHub may return a non-zero process status for this greeting; check the response text. If the greeting is for the wrong account, inspect the other configured GitHub aliases and try the one that matches the requested owner. This verifies the account; the actual clone/fetch verifies repository access. On another computer, configure an SSH key for the desired GitHub account before using this Skill.
-
-2. Install GitHub CLI and authenticate it if it is not already logged in:
-
-   ```powershell
-   gh auth status
-   gh auth login --web
-   ```
-
-   Run `gh auth login --web` only when `gh auth status` reports that no valid login is configured. Complete the browser prompt, then verify again with `gh auth status`. The account needs permission to create a PR in the repository.
-
-Git uses the SSH key for clone, fetch, and push. `gh` uses its own stored login to create the PR. Configuring one does not configure the other.
-
-### Alternative: HTTPS credentials or Codex GitHub integration
-
-- With an HTTPS remote, Git must already have a working credential manager or other approved credential method for clone/fetch/push. GitHub CLI or an authorized Codex GitHub integration can create the PR.
-- An authorized Codex GitHub integration can create the PR, but it does not by itself provide Git clone/push credentials. Configure Git access separately.
-- Never paste a password, personal access token, or private SSH key into the chat. If authentication is missing, complete the appropriate local login flow yourself and then resume.
-
-## How to use
-
-Run the Skill from the repository directory, or include a GitHub repository URL and the requested feature:
-
-```text
-$sdd-guo Add CSV export to the order list. Use main as the base branch.
+```sshconfig
+Host github-owner
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github_owner
+    IdentitiesOnly yes
 ```
 
-If the intended base is not `main`, state the exact branch name:
+Verify which account GitHub recognizes:
 
-```text
-$sdd-guo Add CSV export to the order list. Use release/2.x as the base branch.
+```sh
+ssh -T git@github-owner
 ```
 
-If no repository is open in the current directory, include its GitHub URL. The Skill checks access and local state, creates a feature branch from the selected base, follows the Spec Kit workflow, runs relevant checks, and then pushes and opens the PR. If a required credential, permission, dependency, clarification, or passing check is missing, it reports the blocker and stops at that step.
+The greeting must match the intended repository owner/account. GitHub may return a non-zero exit code for this greeting even when authentication succeeded; inspect the greeting text. This confirms the SSH identity only. Then verify repository read access with `git ls-remote git@github-owner:OWNER/REPO.git` or by cloning/fetching. A matching greeting does not prove write permission or admin role. Never paste a private key or token into chat.
 
-## References
+For PR and owner-delivery operations, check GitHub CLI authentication and permission:
 
-- [GitHub Spec Kit](https://github.com/github/spec-kit)
-- [GitHub CLI authentication](https://cli.github.com/manual/gh_auth_login)
+```sh
+gh auth status
+gh repo view OWNER/REPO --json viewerPermission --jq .viewerPermission
+```
+
+`ADMIN` is required for the owner delivery path. If `gh` is not authenticated, run `gh auth login --web` locally, complete the browser flow, then check again. Git SSH credentials and `gh` credentials are separate. A browser session is not required for clone/fetch/push when SSH is set up; use the matching account in the browser when you need to view or operate the PR interface.
+
+## Delivery behavior
+
+The default base branch is `main`. If another base is intended, name it exactly in the request. The Skill does not infer it from a feature branch or remote default.
+
+- A user who explicitly requests a PR gets a PR; it remains open unless they also ask for a merge.
+- A verified repository owner/admin who asks for end-to-end delivery can update the selected base directly when local checks pass and repository rules allow it. This avoids creating a redundant PR.
+- If branch protection requires a PR, the Skill creates one and merges only after required checks and approvals pass. It never bypasses those gates.
+- If admin authority is absent or unclear, the Skill pushes a feature branch and opens a PR. It does not merge on that path unless the user asks.
+
+An empty repository has no base for a PR. The Skill seeds a minimal base commit only when the user explicitly asks to create and deliver a new project there; otherwise it stops before making a base commit.
+
+The Skill does not discard unexplained local changes or force-reset a checkout. It reports checks as passed, failed, or not run. Read [SKILL.md](SKILL.md), [workflow gates](references/workflow-gates.md), and the [evolution policy](references/evolution-policy.md) for details.
+
+## Evolution
+
+The Skill can propose evidence-backed improvements but does not rewrite itself during a product task. General improvements require independent evidence from unrelated projects (or an explicit request to generalize), evaluation cases, and user approval. Project-specific guidance requires an exact trigger, stays within that context, and also requires approval. See [references/evolution-policy.md](references/evolution-policy.md).
+
+## Design references
+
+The workflow was informed by concrete practices in these public projects, read on 2026-09-24. Popularity is context, not proof of quality; the Skill adopts only the practices suited to its scope:
+
+- [obra/superpowers](https://github.com/obra/superpowers) — intent and design before implementation, evidence-first debugging, diff review, and final-state verification.
+- [github/spec-kit](https://github.com/github/spec-kit) — staged specification/clarification/planning/tasks/analysis/implementation and repository-local workflow artifacts.
+- [SpillwaveSolutions/sdd-skill](https://github.com/SpillwaveSolutions/sdd-skill) — brownfield investigation and explicit mapping of success criteria to verification.
+- [tikalk/adlc-team-skills](https://github.com/tikalk/adlc-team-skills) — evaluation goldsets and regression graders as a way to test instruction changes.

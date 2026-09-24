@@ -1,4 +1,4 @@
 interface:
   display_name: "SDD Guo"
-  short_description: "Use Spec Kit to build and deliver GitHub features"
-  default_prompt: "Use $sdd-guo to develop this GitHub feature from its base branch through tests and a pull request."
+  short_description: "Clarify, build, verify, and deliver GitHub repository changes"
+  default_prompt: "Use $sdd-guo to clarify, implement, verify, and deliver this repository change under its branch and ownership rules."
