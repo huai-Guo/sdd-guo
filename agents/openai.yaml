@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD Guo"
+  short_description: "Use Spec Kit to build and deliver GitHub features"
+  default_prompt: "Use $sdd-guo to develop this GitHub feature from its base branch through tests and a pull request."
