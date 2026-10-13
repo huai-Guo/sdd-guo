@@ -24,6 +24,8 @@ Before proposing a persistent change, record:
 
 Keep candidates separate from active instructions until reviewed. If the user only asked to complete product work, do not edit the Skill or project policy as a side effect; offer the candidate in the completion summary only when it is useful.
 
+An explicit request to update this Skill authorizes that named revision; do not require a second blanket approval for the same scope. Changes to bundled checks/config/templates are instruction evolution too. A target-local override authorized for repository A remains specialized to A; do not copy it into shared defaults. Revising the source repository does not implicitly authorize replacing another installed active copy.
+
 ## Promotion and rollback gates
 
 - Change only the lane the user approved. Never move a specialized rule into general guidance without satisfying the general trigger and receiving approval for that scope change.

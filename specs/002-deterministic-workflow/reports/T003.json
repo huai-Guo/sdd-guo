@@ -1,0 +1,17 @@
+{
+  "taskId": "T003",
+  "status": "DONE",
+  "summary": "Implemented opt-in confirmation, findings/events, doctor, overview and archive guards.",
+  "files": [
+    "scripts/Workflow.psm1",
+    "assets/workflow/config.json"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "28 local unit cases passed, 0 failed on final runtime code"
+    }
+  ],
+  "warnings": []
+}

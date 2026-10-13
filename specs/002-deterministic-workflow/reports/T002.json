@@ -1,0 +1,17 @@
+{
+  "taskId": "T002",
+  "status": "DONE",
+  "summary": "Implemented task reports, compatible markers, checkpoint recovery and freshness detection.",
+  "files": [
+    "scripts/Workflow.psm1",
+    "references/implement-protocol.md"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "28 local unit cases passed, 0 failed on final runtime code"
+    }
+  ],
+  "warnings": []
+}

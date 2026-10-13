@@ -1,0 +1,23 @@
+{
+  "taskId": "T004",
+  "status": "DONE",
+  "summary": "Updated progressive Skill routing, templates, policy, evaluations and source notes.",
+  "files": [
+    "SKILL.md",
+    "references/runtime-workflow.md",
+    "references/design-sources.md"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "28 local unit cases passed, 0 failed on final runtime code"
+    },
+    {
+      "command": "Skill Creator and local artifact validation, final diff inspection",
+      "result": "passed",
+      "evidence": "Skill is valid; 24 local links, JSON assets, workflow YAML valid; authority and evolution boundaries inspected"
+    }
+  ],
+  "warnings": []
+}

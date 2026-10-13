@@ -1,0 +1,10 @@
+{
+  "taskId": "T012",
+  "status": "DONE",
+  "summary": "Describe the observed change",
+  "files": ["src/example.ps1"],
+  "checks": [{"command": "actual local command or inspection", "result": "passed", "evidence": "actual output/result"}],
+  "warnings": [],
+  "reason": "Required for BLOCKED instead of DONE",
+  "resumeHint": "Required for BLOCKED instead of DONE"
+}

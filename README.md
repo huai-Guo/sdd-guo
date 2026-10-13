@@ -29,7 +29,7 @@ Verify which account GitHub recognizes:
 ssh -T git@github-owner
 ```
 
-The greeting must match the intended repository owner/account. GitHub may return a non-zero exit code for this greeting even when authentication succeeded; inspect the greeting text. This confirms the SSH identity only. Then verify repository read access with `git ls-remote git@github-owner:OWNER/REPO.git` or by cloning/fetching. A matching greeting does not prove write permission or admin role. Never paste a private key or token into chat.
+The greeting must match the intended authorized account (owner or verified collaborator). GitHub may return a non-zero exit code for this greeting even when authentication succeeded; inspect the greeting text. This confirms the SSH identity only. Then verify repository read access with `git ls-remote git@github-owner:OWNER/REPO.git` or by cloning/fetching. A matching greeting does not prove write permission or admin role. If SSH and your GitHub integration use different accounts, verify the writing account's role. Never paste a private key or token into chat.
 
 For PR and owner-delivery operations, check GitHub CLI authentication and permission:
 
@@ -56,6 +56,29 @@ The Skill does not discard unexplained local changes or force-reset a checkout. 
 ## Evolution
 
 The Skill can propose evidence-backed improvements but does not rewrite itself during a product task. General improvements require independent evidence from unrelated projects (or an explicit request to generalize), evaluation cases, and user approval. Project-specific guidance requires an exact trigger, stays within that context, and also requires approval. See the [evolution policy](references/evolution-policy.md) and [behavioral evaluation cases](evals/behavioral-cases.md).
+
+## Resumable local workflow
+
+Multi-task changes can use the bundled PowerShell 7 helpers without installing a CLI engine or a YAML parser. Run the installed `scripts/workflow.ps1` with `-Root` pointing at your project. Keep `.sdd-guo/` ignored; specifications, reports and review evidence live in `specs/<feature>/` and remain reviewable. Small edits can still use concise equivalent notes.
+
+```powershell
+& /path/to/sdd-guo/scripts/workflow.ps1 -Action doctor -Root /path/to/repo
+& /path/to/sdd-guo/scripts/workflow.ps1 -Action init -Root /path/to/repo -Feature 002-user-auth
+& /path/to/sdd-guo/scripts/workflow.ps1 -Action overview -Root /path/to/repo -Feature 002-user-auth
+& /path/to/sdd-guo/scripts/workflow.ps1 -Action resume -Root /path/to/repo -Feature 002-user-auth
+```
+
+Stages are context, specify, plan, validate, implement, verify and deliver. The validate stage records semantic readiness before coding. Helpers reject skipped stages, missing structures, blocked/reportless tasks and stale confirmations. A structural pass does not prove requirements are correct or tests have run. Resume checks documents, HEAD and tracked/untracked working code; ignored files are outside the snapshot. State is local, bound to one checkout and written by one main agent.
+
+Explicit confirmation points are opt-in; existing authorization drives ordinary progress. Events stay local with no remote telemetry. Doctor reports missing optional tools without blocking supported GitHub connector/concise-artifact workflows. Current baselines and archive markers are optional, and require reviewed delta merges and actual base delivery; open PRs remain proposals. See [runtime workflow](references/runtime-workflow.md), [task protocol](references/implement-protocol.md) and [source/adaptation notes](references/design-sources.md).
+
+## Local verification
+
+```powershell
+pwsh -NoProfile -File tests/run-unit-tests.ps1
+```
+
+The dependency-free suite tests helper functions against isolated temporary fixtures. It uses no network, browser, remote repository or E2E tests. Run the Skill Creator `quick_validate.py` when available, and review [behavioral cases](evals/behavioral-cases.md) separately; helper tests do not certify all agent decisions. Respect the user's requested verification scope when applying the Skill to another project.
 
 ## Design references
 

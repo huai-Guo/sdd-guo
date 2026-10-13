@@ -1,0 +1,17 @@
+{
+  "taskId": "T001",
+  "status": "DONE",
+  "summary": "Implemented ordered state, structural checks and pre-implementation validation.",
+  "files": [
+    "scripts/Workflow.psm1",
+    "assets/workflow/checks.json"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "28 local unit cases passed, 0 failed on final runtime code"
+    }
+  ],
+  "warnings": []
+}

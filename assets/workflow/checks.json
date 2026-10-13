@@ -1,0 +1,35 @@
+{
+  "specify": {
+    "spec.md": [
+      {"type": "file_not_empty"},
+      {"type": "must_contain_heading", "pattern": "^## User Scenarios(?: & Testing)?(?:\\s|$)"},
+      {"type": "must_contain_heading", "pattern": "^## Requirements(?:\\s|$)"},
+      {"type": "must_contain_heading", "pattern": "^## Success Criteria(?:\\s|$)"}
+    ]
+  },
+  "plan": {
+    "plan.md": [
+      {"type": "file_not_empty"},
+      {"type": "must_contain_heading", "pattern": "^## Technical Context(?:\\s|$)"},
+      {"type": "must_contain_heading", "pattern": "^## Project Structure(?:\\s|$)"}
+    ],
+    "tasks.md": [{"type": "file_not_empty"}, {"type": "must_match_regex", "pattern": "^- \\[[ xX✓→⚠]\\] T[0-9]+\\s"}]
+  },
+  "validate": {
+    "validation.md": [
+      {"type": "must_contain_heading", "pattern": "^## Document Chain Consistency\\s*$"},
+      {"type": "must_contain_heading", "pattern": "^## Implementation Decision\\s*$"},
+      {"type": "must_match_regex", "pattern": "^GO\\s*$"},
+      {"type": "must_not_match_regex", "pattern": "^NO-GO\\s*$"}
+    ]
+  },
+  "verify": {
+    "verification.md": [
+      {"type": "must_contain_heading", "pattern": "^## Acceptance Evidence\\s*$"},
+      {"type": "must_contain_heading", "pattern": "^## Change Review\\s*$"}
+    ]
+  },
+  "deliver": {
+    "delivery.md": [{"type": "file_not_empty"}]
+  }
+}

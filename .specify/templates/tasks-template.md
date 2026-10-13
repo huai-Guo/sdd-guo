@@ -13,6 +13,12 @@ description: "Task list template for feature implementation"
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
+## sdd-guo progress and evidence
+
+Use `[ ]` pending, `[→]` in progress, `[x]` verified done and `[⚠]` blocked. `[X]`/`[✓]` remain readable; emit `[x]` for Spec Kit compatibility. Only the main writer updates progress. A `[P]` marker does not authorize delegation.
+
+For each task, identify its requirement/acceptance IDs, dependencies and local verification. Record a DONE/BLOCKED JSON report using `references/implement-protocol.md` from the installed sdd-guo Skill. Blocked tasks need a checkpoint with reason, affected task IDs and resume hint. They remain incomplete; dependent tasks must wait. Respect explicitly excluded test layers, including E2E.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
