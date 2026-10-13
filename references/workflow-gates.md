@@ -72,4 +72,4 @@ Determine authority using repository metadata from an authenticated GitHub CLI/i
 
 After any merge, verify the resulting base commit and required CI status. Do not auto-delete branches or discard local state unless the user asked or repository policy clearly requires it. If push, PR, or merge fails, report the exact operation and error; do not claim delivery succeeded.
 
-Record permission, rules, destination and observed check status in `delivery.md`. An open PR is a delivered proposal, not deployed/current behavior. Promote an optional current baseline only after verified base delivery; preserve feature history and review delta conflicts under [runtime-workflow.md](runtime-workflow.md).
+Record permission, rules, destination and observed check status in `delivery.md`. An open PR is a delivered proposal, not deployed/current behavior. When a baseline exists, include its synchronized proposal in the same feature branch/PR as implementation, checking inputs/output under [baseline-workflow.md](baseline-workflow.md). The selected base's baseline becomes current on actual landing; preserve feature history and archive only after verifying that delivery.

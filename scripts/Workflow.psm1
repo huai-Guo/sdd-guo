@@ -97,7 +97,8 @@ function Initialize-Sdd([string]$Root, [string]$Feature) {
     $null = Get-SddConfig $base
     $stages = [ordered]@{}
     foreach ($stage in $script:Stages) { $stages[$stage] = @{status='pending'; evidence=''; fingerprint=''} }
-    $state = @{version=1; feature=$Feature; repository=$base; flowId=[guid]::NewGuid().ToString('N').Substring(0,8); currentStage='context'; status='active'; commit=$head; stages=$stages; history=@(); taskReports=@{}; reviewFindings=@{}}
+    $baselineRequired=Test-Path -LiteralPath (Get-SddPath $base 'specs/baseline')
+    $state = @{version=1; feature=$Feature; repository=$base; flowId=[guid]::NewGuid().ToString('N').Substring(0,8); currentStage='context'; status='active'; commit=$head; stages=$stages; history=@(); taskReports=@{}; reviewFindings=@{}; baselineRequired=[bool]$baselineRequired}
     $null = New-Item -ItemType Directory -Path (Split-Path $path -Parent) -Force
     Save-SddState $base $state 'initialized' $Feature
     $state
@@ -155,6 +156,23 @@ function Get-SddFingerprint([string]$Root, [string]$Feature, [string]$Stage) {
             $content = (Get-SddTasks $Root $Feature | ForEach-Object { "$($_.id):$($_.description)" }) -join "`n"
         } else { $content = Get-Content -LiteralPath $path -Raw }
         $parts.Add("${file}:$(Get-SddHash $content)")
+    }
+    $snapshotPath=Get-SddPath $Root "specs/$Feature/baseline-inputs.json"
+    if (Test-Path -LiteralPath $snapshotPath) {
+        if ($Stage -in @('plan','validate','implement','verify')) {
+            foreach ($file in @('baseline-inputs.json','baseline-delta.json')) {
+                $path=Get-SddPath $Root "specs/$Feature/$file"
+                $hash=if (Test-Path -LiteralPath $path) { (Get-FileHash -LiteralPath $path).Hash } else { 'MISSING' }
+                $parts.Add("${file}:$hash")
+            }
+        }
+        if ($Stage -in @('implement','verify')) {
+            foreach ($file in @('spec.md','design.md')) {
+                $path=Get-SddPath $Root "specs/baseline/$file"
+                $hash=if (Test-Path -LiteralPath $path) { (Get-FileHash -LiteralPath $path).Hash } else { 'MISSING' }
+                $parts.Add("baseline/${file}:$hash")
+            }
+        }
     }
     if ($Stage -in @('implement','verify')) {
         $files = @(& git -C $Root -c core.quotepath=false ls-files --cached --others --exclude-standard)
@@ -214,6 +232,11 @@ function Confirm-SddStage([string]$Root, [string]$Feature, [string]$Stage, [stri
     if ((Get-SddHead $Root) -ne $state.commit) { throw 'HEAD changed. Reopen context and revalidate repository/authority before confirmation.' }
     if ($Stage -in (Get-SddConfig $Root).confirmationPoints -and [string]::IsNullOrWhiteSpace($Acknowledgement)) { throw "Configured confirmation point: $Stage. Record existing user approval; do not invent it." }
     $null = Test-SddStage $Root $Feature $Stage
+    $baselineRequired=($state.Contains('baselineRequired') -and $state.baselineRequired) -or (Test-Path -LiteralPath (Get-SddPath $Root "specs/$Feature/baseline-inputs.json"))
+    if ($baselineRequired -and $Stage -in @('plan','validate','implement','verify','deliver')) {
+        $mode=if ($Stage -in @('implement','verify','deliver')) { 'applied' } else { 'preview' }
+        $null=Test-SddBaseline $Root $Feature $mode
+    }
     if ($Stage -in @('implement','verify','deliver')) {
         foreach ($task in (Get-SddTasks $Root $Feature)) {
             if ($task.status -ne 'done' -or -not $state.taskReports.Contains($task.id) -or $state.taskReports[$task.id].status -ne 'DONE') { throw "Task $($task.id) is incomplete or has no DONE report." }
@@ -346,8 +369,10 @@ function Complete-SddArchive([string]$Root, [string]$Feature, [string]$Evidence)
     }
     $receipt=Get-SddJson (Get-SddPath $Root "specs/$Feature/delivery-receipt.json")
     if ($receipt.method -notin @('direct','merged-pr') -or $receipt.baseCommit -notmatch '^[a-f0-9]{40}$' -or [string]::IsNullOrWhiteSpace($receipt.destination)) { throw 'Archive requires direct/merged-pr receipt, base commit and destination; an open PR is not a baseline.' }
+    if (($state.Contains('baselineRequired') -and $state.baselineRequired) -or (Test-Path -LiteralPath (Get-SddPath $Root "specs/$Feature/baseline-inputs.json"))) { $null=Test-SddBaseline $Root $Feature applied }
     $state.status='archived'
     Save-SddState $Root $state 'archived' $Evidence
 }
 
-Export-ModuleMember -Function Initialize-Sdd, Get-SddState, Test-SddStage, Confirm-SddStage, Reopen-SddStage, Set-SddTask, Set-SddFinding, Get-SddResume, Get-SddOverview, Test-SddDoctor, Complete-SddArchive
+. (Join-Path $PSScriptRoot 'Baseline.ps1')
+Export-ModuleMember -Function Initialize-Sdd, Get-SddState, Test-SddStage, Confirm-SddStage, Reopen-SddStage, Set-SddTask, Set-SddFinding, Get-SddResume, Get-SddOverview, Test-SddDoctor, Complete-SddArchive, New-SddBaselineSnapshot, Test-SddBaseline, Sync-SddBaseline

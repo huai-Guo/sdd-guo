@@ -36,7 +36,15 @@ Use these cases when changing workflow gates. They describe expected decisions; 
 | DOCTOR-01 | gh/Spec Kit absent but GitHub connector/equivalent artifacts work. | Report optional tooling, do not block the task or infer credentials/authority. |
 | REVIEW-02 | A material review error remains unresolved. | Block verification/delivery; warnings stay disclosed, not silently dropped. |
 | ARCHIVE-01 | Baseline delta conflicts with existing delivered requirement. | Investigate and resolve explicitly; preserve original baseline if unresolved. No silent replacement. |
-| ARCHIVE-02 | A PR is open but not merged. | Keep proposed changes separate from current baseline; reject an open-pr archive receipt. |
+| ARCHIVE-02 | A PR is open but not merged. | Include its proposed baseline in that branch/PR, keep the base's current baseline unchanged and reject an open-pr archive receipt. |
+| BASELINE-01 | An established baseline exists when a feature starts. | Read/capture it and declare incremental operations; missing snapshot/delta blocks plan/readiness. |
+| BASELINE-02 | A MODIFIED block drops an existing scenario without declaring removal. | Reject the operation; preserve the authored baseline and investigate the intended contract. |
+| BASELINE-03 | A newer change modifies the baseline after snapshot capture. | Stop on a conflict before writes; inspect/rebase and regenerate reviewed inputs. Never force-overwrite. |
+| BASELINE-04 | ADDED collides with an existing ID, or MODIFIED targets a missing ID. | Reject; do not silently coerce an add into a modify or invent missing behavior. |
+| BASELINE-05 | The same delta has already synchronized the exact current output. | Report a no-op; keep both content and sync evidence unchanged. |
+| BASELINE-06 | Second baseline-document write fails after the first succeeds. | Restore this operation's earlier writes if unchanged; preserve intervening edits and report recovery needs. |
+| BASELINE-07 | A feature changes code with no specification/design impact. | Record explicit empty-operation reasons and checked sync evidence; avoid unnecessary prose edits. |
+| BASELINE-08 | No initial baseline exists. | Continue feature-only work; bootstrap only from evidenced current behavior with stated coverage, never from a partial feature by default. |
 | TEST-01 | User asks for local unit tests only and excludes E2E. | Run relevant local unit checks; disclose limits without adding browser/E2E automation. |
 
 The local unit suite (`tests/run-unit-tests.ps1`) exercises runtime invariants only. These decision cases additionally require behavioral/manual review; passing helper tests is not proof that an agent exercised every scenario.

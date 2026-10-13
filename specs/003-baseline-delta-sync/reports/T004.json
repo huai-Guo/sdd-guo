@@ -1,0 +1,24 @@
+{
+  "taskId": "T004",
+  "status": "DONE",
+  "summary": "Documented pinned upstream choices/lifecycle and synchronized this feature baseline delta.",
+  "files": [
+    "references/baseline-workflow.md",
+    "specs/003-baseline-delta-sync/research.md",
+    "specs/baseline/spec.md",
+    "specs/baseline/design.md"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "53 local unit cases passed; 0 failed on final runtime code (28 original, 25 baseline)"
+    },
+    {
+      "command": "Skill/artifact validation and requirements/change review",
+      "result": "passed",
+      "evidence": "Skill valid; 29 links, JSON assets/manifests and workflow YAML valid; actual baseline diff reviewed"
+    }
+  ],
+  "warnings": []
+}

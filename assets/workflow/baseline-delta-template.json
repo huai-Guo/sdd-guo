@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "feature": "003-session-change",
+  "documents": {
+    "spec.md": {
+      "operations": [
+        {
+          "type": "MODIFIED",
+          "id": "FR-001",
+          "before": "### FR-001: Session\nMUST expire after 30 minutes.\n\n#### Scenario: Idle\nWHEN inactive for 30 minutes\nTHEN expire.\n\n",
+          "after": "### FR-001: Session\nMUST expire after 15 minutes.\n\n#### Scenario: Idle\nWHEN inactive for 15 minutes\nTHEN expire.\n\n"
+        }
+      ]
+    },
+    "design.md": {
+      "operations": [],
+      "reason": "Timeout uses the existing configurable mechanism; no design decision changes."
+    }
+  }
+}

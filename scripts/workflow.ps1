@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][ValidateSet('init','check','confirm','reopen','resume','task','finding','overview','doctor','archive')][string]$Action,
+    [Parameter(Mandatory)][ValidateSet('init','check','confirm','reopen','resume','task','finding','overview','doctor','archive','baseline-snapshot','baseline-check','baseline-sync')][string]$Action,
     [string]$Root = (Get-Location).Path,
     [string]$Feature,
     [string]$Stage,
@@ -11,7 +11,8 @@ param(
     [ValidateSet('pending','in_progress','done','blocked')][string]$Status,
     [string]$ReportPath,
     [ValidateSet('info','warn','error')][string]$Severity = 'warn',
-    [switch]$Resolved
+    [switch]$Resolved,
+    [ValidateSet('preview','applied')][string]$Mode='preview'
 )
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Workflow.psm1') -Force -DisableNameChecking
@@ -28,6 +29,9 @@ try {
         overview { Get-SddOverview @arguments }
         doctor { Test-SddDoctor -Root $Root }
         archive { Complete-SddArchive @arguments -Evidence $Evidence }
+        baseline-snapshot { New-SddBaselineSnapshot @arguments }
+        baseline-check { Test-SddBaseline @arguments -Mode $Mode }
+        baseline-sync { Sync-SddBaseline @arguments }
     }
 } catch {
     Write-Error $_ -ErrorAction Continue

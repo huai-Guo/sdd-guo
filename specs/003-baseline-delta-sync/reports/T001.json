@@ -1,0 +1,17 @@
+{
+  "taskId": "T001",
+  "status": "DONE",
+  "summary": "Implemented captured baseline inputs and exact delta operations with preserved blocks/scenarios.",
+  "files": [
+    "scripts/Baseline.ps1",
+    "assets/workflow/baseline-delta-template.json"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "53 local unit cases passed; 0 failed on final runtime code (28 original, 25 baseline)"
+    }
+  ],
+  "warnings": []
+}

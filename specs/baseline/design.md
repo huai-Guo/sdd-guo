@@ -6,7 +6,7 @@ SKILL.md holds purpose, seven stages and authority/evolution boundaries. workflo
 
 ## Local runtime
 
-PowerShell 7 module plus a thin command entrypoint. JSON rules/config avoid additional parser/runtime dependencies. `.sdd-guo/` stores ignored state and JSONL events; feature documents, reports and evidence remain reviewable. Progress has one main writer, atomic per-file replacement and explicit mismatch recovery. State is bound to one checkout and one feature.
+PowerShell 7 module plus a thin command entrypoint, with a focused baseline helper loaded in the same module. JSON rules/config avoid additional parser/runtime dependencies. `.sdd-guo/` stores ignored state and JSONL events; feature documents, reports, baseline snapshots/deltas/sync hashes and evidence remain reviewable. Runtime state is checkout-bound; baseline artifacts travel with the branch without workstation paths. Progress has one main writer, atomic per-file replacement and explicit mismatch recovery.
 
 ## Evidence and compatibility
 
@@ -14,7 +14,7 @@ Named stages avoid fractional numbering. Structural rules support nonempty files
 
 ## Delivery and learning
 
-Scripts never perform GitHub writes or infer ADMIN from local authentication. Repository permission/rules evidence selects the existing delivery path. Baseline merging is a reviewed agent operation by stable requirement IDs; receipt checks enforce format and pending-PR exclusion without a prose merge engine. Configuration evolution follows the same general/specialized policy as instructions.
+Scripts never perform GitHub writes or infer ADMIN from local authentication. Repository permission/rules evidence selects the existing delivery path. Agent-authored ADDED/MODIFIED/REMOVED blocks preserve stable IDs and surviving scenarios; helpers preflight both baseline documents, reject stale inputs and support no-op repetition plus guarded rollback. Code, delta and proposed full baseline land together for direct and PR delivery; base branch content is current, branch content is proposed. Archive checks synchronization and a direct/merged receipt without performing a second semantic merge. Configuration evolution follows the same general/specialized policy as instructions.
 
 ## Verification
 

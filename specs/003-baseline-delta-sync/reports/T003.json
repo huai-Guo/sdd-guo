@@ -1,0 +1,17 @@
+{
+  "taskId": "T003",
+  "status": "DONE",
+  "summary": "Integrated required baseline gates, freshness and archive synchronization checks.",
+  "files": [
+    "scripts/Workflow.psm1",
+    "scripts/workflow.ps1"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "53 local unit cases passed; 0 failed on final runtime code (28 original, 25 baseline)"
+    }
+  ],
+  "warnings": []
+}

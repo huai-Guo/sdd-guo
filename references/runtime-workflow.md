@@ -42,12 +42,12 @@ Unresolved `error` findings block verify/deliver. `warn` findings remain in the 
 
 ## Baseline and archive
 
-Keep feature directories and reviewable history. For recurring changes, maintain optional `specs/baseline/spec.md` for current delivered requirements and `design.md` for current technical decisions. Do not manufacture an all-system baseline from one incomplete feature. Mark delta requirements ADDED/MODIFIED/REMOVED; merge by stable IDs and explicit semantics. Missing MODIFIED targets, duplicate IDs and conflicting current behavior require investigation; ask only when an unresolved choice needs user input. Never append contradictory requirements or silently replace an entire baseline.
+Initial baseline creation is optional and must cover evidenced current behavior. Once a baseline exists, ongoing full/incremental synchronization is required under [baseline-workflow.md](baseline-workflow.md): capture inputs, declare changes, preview, sync and verify. Both PR and direct delivery include the proposed baseline in the same branch/commit as code. The base's baseline stays current until merge; do not defer all PR baseline updates to a second post-merge delivery.
 
-Prepare the reviewed baseline update and `specs/<feature>/ARCHIVED.md` in the delivery diff when the owner path is known; for a PR, keep baseline proposals out of the current delivered baseline until actual merge. The archive marker lists merged IDs/decisions, conflict resolutions, destination and evidence. Once delivery is verified, write `delivery-receipt.json` with `method` (`direct` or `merged-pr`), `baseCommit` (full SHA) and `destination`. Then:
+Preserve feature directories. Prepare `specs/<feature>/ARCHIVED.md` listing synchronized IDs/design decisions, conflict resolutions and the base-delivery condition. Once delivery is verified, write `delivery-receipt.json` with `method` (`direct` or `merged-pr`), `baseCommit` (full SHA) and `destination`. Then:
 
 ```powershell
 & $workflow -Action archive -Root /path/to/repo -Feature 002-user-auth -Evidence 'Verified merged/base commit and reviewed baseline delta'
 ```
 
-Archive requires complete stages and nonempty baseline/marker/receipt artifacts. Open PR receipts are refused. It records local archived status; it neither merges prose nor writes GitHub. Receipt format checks do not independently prove remote delivery: inspect the actual remote commit/check status first. A feature can be delivered without opting into a baseline or archive.
+Archive requires complete stages, baseline/marker/receipt artifacts and checked synchronization for established-baseline flows. Open PR receipts are refused. It records local archived status; it neither merges prose nor writes GitHub. Receipt format checks do not independently prove remote delivery: inspect the actual remote commit/check status first. Feature-only repositories can still deliver without an initial baseline; established-baseline repositories must synchronize it. Archival remains a post-delivery record, not permission for another code/spec update.

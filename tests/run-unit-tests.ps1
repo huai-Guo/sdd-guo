@@ -249,6 +249,7 @@ try {
         $output=(Get-SddOverview $script:Repo $script:Feature) -join "`n"
         Assert ($output -match '\[>\] context' -and $output -match '\[ \] validate')
     }
+    . (Join-Path $PSScriptRoot 'baseline-unit-cases.ps1')
 } finally {
     # Only remove the uniquely created test directory under the resolved system temp directory.
     $resolved=[IO.Path]::GetFullPath($script:Scratch)

@@ -1,0 +1,17 @@
+{
+  "taskId": "T002",
+  "status": "DONE",
+  "summary": "Implemented all-document preflight, idempotency, guarded rollback and normalized sync evidence.",
+  "files": [
+    "scripts/Baseline.ps1",
+    "tests/baseline-unit-cases.ps1"
+  ],
+  "checks": [
+    {
+      "command": "pwsh -NoProfile -File tests/run-unit-tests.ps1",
+      "result": "passed",
+      "evidence": "53 local unit cases passed; 0 failed on final runtime code (28 original, 25 baseline)"
+    }
+  ],
+  "warnings": []
+}
